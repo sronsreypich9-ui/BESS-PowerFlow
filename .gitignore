@@ -1,0 +1,25 @@
+node_modules/
+build/
+dist/
+release/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Caches
+.cache/
+.electron-builder-cache/
+.npm-cache/
+WUDownloadCache/
+
+# Temporary files
+temp/
+stderr.txt
+stderr_gpu.txt
+stdout.txt
+stdout_gpu.txt
+
+# Version archives
+*.zip

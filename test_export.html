@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMS Toolbox - Interactive Graph Export (SNTV 12MWH)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Custom Scrollbar for premium feel */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 163, 255, 0.4);
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            background: '#0B0F19',
+            panel: '#151F32',
+            borderV: 'rgba(255, 255, 255, 0.08)',
+            accentBlue: '#00A3FF',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-gray-200 h-screen flex flex-col overflow-hidden dark">
+  <!-- Header -->
+  <header class="h-12 bg-panel border-b border-borderV flex items-center justify-between px-4 shrink-0">
+    <div class="flex items-center gap-4">
+      <h1 class="font-bold tracking-tight text-sm">
+        EMS TOOLBOX <span class="font-normal text-gray-400">ENTERPRISE PORTABLE VIEW</span>
+      </h1>
+      <div id="pin-counter-container" class="flex items-center gap-1.5 ml-2 font-mono"></div>
+    </div>
+    <div class="flex items-center gap-3 text-[10px] font-mono">
+      <span class="text-gray-500">PROJECT:</span>
+      <span class="text-accentBlue font-bold bg-accentBlue/10 px-2 py-0.5 rounded">SNTV 12MWH</span>
+      <span class="text-gray-500 ml-2">DATE:</span>
+      <span class="text-accentBlue font-bold bg-accentBlue/10 px-2 py-0.5 rounded">2026-05-24</span>
+    </div>
+  </header>
+
+  <!-- Content Grid -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Plot Area -->
+    <div class="flex-1 flex flex-col overflow-y-auto p-4" id="chart-area-container">
+      <div class="text-center text-[13px] tracking-wider mb-2 font-bold" id="plot-main-title">
+        <b>2026-05-24 | Daily Evaluation Report</b>
+      </div>
+      <div class="flex-1 flex flex-col gap-4" id="chart-area">
+        <div id="chart" class="w-full h-full min-h-[500px]"></div>
+      </div>
+    </div>
+
+    <!-- Properties Panel -->
+    <div class="w-72 bg-panel border-l border-borderV flex flex-col overflow-hidden shrink-0">
+      <!-- Tab bar header -->
+      <div class="px-3 pt-2 pb-0 border-b border-borderV bg-[#1C283F] shrink-0">
+        <div class="flex items-center justify-between mb-2">
+          <div class="font-bold text-[10px] uppercase tracking-wider text-gray-400 flex items-center gap-1.5 font-mono">
+            ⚙️ Graph Properties
+          </div>
+          <button onclick="resetAllConfig()" class="text-[8px] font-mono uppercase tracking-wider text-gray-400 hover:text-red-400 transition-colors px-1.5 py-0.5 border border-borderV rounded hover:bg-white/5">
+            Reset
+          </button>
+        </div>
+        <div class="flex gap-0 text-[8px] font-bold uppercase tracking-wider">
+          <button data-tab="layout" onclick="setTab('layout')" class="tab-btn flex-1 py-1.5 border-b-2 border-accentBlue text-accentBlue transition-colors text-center">Layout</button>
+          <button data-tab="axes" onclick="setTab('axes')" class="tab-btn flex-1 py-1.5 border-b-2 border-transparent text-gray-500 hover:text-gray-300 transition-colors text-center">Axes</button>
+          <button data-tab="lines" onclick="setTab('lines')" class="tab-btn flex-1 py-1.5 border-b-2 border-transparent text-gray-500 hover:text-gray-300 transition-colors text-center">Lines</button>
+          <button data-tab="time" onclick="setTab('time')" class="tab-btn flex-1 py-1.5 border-b-2 border-transparent text-gray-500 hover:text-gray-300 transition-colors text-center">Time</button>
+        </div>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-3.5 text-[11px] font-mono">
+        <!-- TAB: Layout -->
+        <div id="section-layout" class="tab-section flex flex-col gap-3">
+          <div class="flex flex-col gap-2">
+            <label class="flex items-center justify-between p-1.5 hover:bg-white/5 rounded cursor-pointer select-none">
+              <span>Show Grid Lines</span>
+              <div id="toggle-showGrid" onclick="toggleKey('showGrid')" class="w-8 h-4 rounded-full relative transition-colors bg-accentBlue">
+                <div class="circle absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all left-[18px]"></div>
+              </div>
+            </label>
+            <label class="flex items-center justify-between p-1.5 hover:bg-white/5 rounded cursor-pointer select-none">
+              <span>Show Legend</span>
+              <div id="toggle-showLegend" onclick="toggleKey('showLegend')" class="w-8 h-4 rounded-full relative transition-colors bg-accentBlue">
+                <div class="circle absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all left-[18px]"></div>
+              </div>
+            </label>
+            <label class="flex items-center justify-between p-1.5 hover:bg-white/5 rounded cursor-pointer select-none">
+              <span>White Background</span>
+              <div id="toggle-bgWhite" onclick="toggleKey('bgWhite')" class="w-8 h-4 rounded-full relative transition-colors bg-gray-700">
+                <div class="circle absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all left-0.5"></div>
+              </div>
+            </label>
+            <label class="flex items-center justify-between p-1.5 hover:bg-white/5 rounded cursor-pointer select-none">
+              <span>Smooth Curves</span>
+              <div id="toggle-smooth" onclick="toggleKey('smooth')" class="w-8 h-4 rounded-full relative transition-colors bg-gray-700">
+                <div class="circle absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all left-0.5"></div>
+              </div>
+            </label>
+            <label class="flex items-center justify-between p-1.5 hover:bg-white/5 rounded cursor-pointer select-none">
+              <span>Data Markers</span>
+              <div id="toggle-showMarkers" onclick="toggleKey('showMarkers')" class="w-8 h-4 rounded-full relative transition-colors bg-gray-700">
+                <div class="circle absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all left-0.5"></div>
+              </div>
+            </label>
+            <div id="marker-size-container" class="flex items-center justify-between gap-2 p-1.5 border-t border-borderV/30 pt-2 shrink-0 hidden">
+              <span class="text-gray-500 shrink-0">Marker Size</span>
+              <input type="range" id="slider-markerSize" min="2" max="12" step="1" oninput="updateMarkerSize(parseInt(this.value))" class="flex-1 h-1 accent-accentBlue cursor-pointer bg-gray-800" />
+              <span class="w-4 text-right text-accentBlue" id="markerSize-label">5</span>
+            </div>
+            <label class="flex items-center justify-between p-1.5 hover:bg-white/5 rounded cursor-pointer select-none">
+              <span>Fill Area (Y1)</span>
+              <div id="toggle-fillArea" onclick="toggleKey('fillArea')" class="w-8 h-4 rounded-full relative transition-colors bg-gray-700">
+                <div class="circle absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all left-0.5"></div>
+              </div>
+            </label>
+            <div class="flex flex-col gap-1 mt-1 border-t border-borderV/30 pt-2 shrink-0">
+              <span class="text-gray-500 text-[8px] uppercase tracking-widest font-bold font-mono">Plot Title Override</span>
+              <input type="text" id="input-customTitle" oninput="updateInput('customTitle', this.value)" placeholder="(use default)" class="h-7 bg-[#0F172A] border border-gray-700 rounded px-2 text-[10px] text-white focus:outline-none focus:border-accentBlue font-mono w-full" />
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Axes -->
+        <div id="section-axes" class="tab-section flex flex-col gap-3.5 hidden">
+          <div class="flex flex-col gap-2">
+            <div class="text-[8px] uppercase tracking-widest text-accentBlue font-bold border-b border-borderV/40 pb-1">Left Y-Axis (Y1)</div>
+            <div class="flex flex-col gap-1">
+              <span class="text-gray-500 text-[8px] uppercase">Label Override</span>
+              <input type="text" id="input-customY1Label" oninput="updateInput('customY1Label', this.value)" placeholder="(use default)" class="h-7 bg-[#0F172A] border border-gray-700 rounded px-2 text-[10px] text-white focus:outline-none focus:border-accentBlue font-mono w-full" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="flex flex-col gap-1">
+                <span class="text-gray-500 text-[8px] uppercase">Min Bound</span>
+                <input type="number" id="input-y1Min" oninput="updateInput('y1Min', this.value)" placeholder="auto" class="h-7 bg-[#0F172A] border border-gray-700 rounded px-2 text-[10px] text-white focus:outline-none focus:border-accentBlue font-mono w-full" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-gray-500 text-[8px] uppercase">Max Bound</span>
+                <input type="number" id="input-y1Max" oninput="updateInput('y1Max', this.value)" placeholder="auto" class="h-7 bg-[#0F172A] border border-gray-700 rounded px-2 text-[10px] text-white focus:outline-none focus:border-accentBlue font-mono w-full" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <div class="text-[8px] uppercase tracking-widest text-orange-400 font-bold border-b border-borderV/40 pb-1">Right Y-Axis (Y2)</div>
+            <div class="flex flex-col gap-1">
+              <span class="text-gray-500 text-[8px] uppercase">Label Override</span>
+              <input type="text" id="input-customY2Label" oninput="updateInput('customY2Label', this.value)" placeholder="(use default)" class="h-7 bg-[#0F172A] border border-gray-700 rounded px-2 text-[10px] text-white focus:outline-none focus:border-accentBlue font-mono w-full" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="flex flex-col gap-1">
+                <span class="text-gray-500 text-[8px] uppercase">Min Bound</span>
+                <input type="number" id="input-y2Min" oninput="updateInput('y2Min', this.value)" placeholder="auto" class="h-7 bg-[#0F172A] border border-gray-700 rounded px-2 text-[10px] text-white focus:outline-none focus:border-accentBlue font-mono w-full" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-gray-500 text-[8px] uppercase">Max Bound</span>
+                <input type="number" id="input-y2Max" oninput="updateInput('y2Max', this.value)" placeholder="auto" class="h-7 bg-[#0F172A] border border-gray-700 rounded px-2 text-[10px] text-white focus:outline-none focus:border-accentBlue font-mono w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Lines -->
+        <div id="section-lines" class="tab-section flex flex-col gap-3.5 hidden">
+          <div class="text-[8px] uppercase tracking-widest text-gray-500 border-b border-borderV/40 pb-1 font-mono">Per-Series Line Styles</div>
+          <div id="lines-series-container" class="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-1">
+            <!-- Dynamic elements generated by script -->
+          </div>
+        </div>
+
+        <!-- TAB: Time -->
+        <div id="section-time" class="tab-section flex flex-col gap-3.5 hidden">
+          <div class="text-[8px] uppercase tracking-widest text-gray-500 border-b border-borderV/40 pb-1 font-mono">Time Downsampling</div>
+          <div class="flex flex-col gap-1.5 mt-1">
+            <span class="text-gray-500 text-[9px]">Downsampling Resolution</span>
+            <select id="select-resolution" onchange="updateResolution(parseInt(this.value))" class="h-7 bg-[#0F172A] border border-gray-700 rounded px-2 text-[10px] text-white focus:outline-none font-mono w-full">
+              <option value="5">5 Minutes (Raw Data)</option>
+              <option value="10">10 Minutes</option>
+              <option value="15">15 Minutes</option>
+              <option value="30">30 Minutes</option>
+              <option value="60">60 Minutes (1 Hour)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const baseData = [{"x":["08:00","08:05","08:10"],"y":[10,12,11],"type":"scatter","name":"P (POC) (Subplot 1)"}];
+    const baseLayout = {"title":{"text":"Mock Evaluation Report"},"xaxis":{"title":"Time"},"yaxis":{"title":"P (MW)"}};
+    const initialConfig = {"timeResolution":5,"smoothCurves":false,"fillAreaY1":false,"showGridLines":true,"showLegend":true,"whiteBackground":false};
+    const pinnedPoints = [];
+
+    // Map UI names to internal config schema
+    const graphConfig = {
+      showGrid: initialConfig.showGridLines ?? true,
+      showLegend: initialConfig.showLegend ?? true,
+      bgWhite: initialConfig.whiteBackground ?? false,
+      smooth: initialConfig.smoothCurves ?? false,
+      showMarkers: initialConfig.showMarkers ?? false,
+      markerSize: initialConfig.markerSize ?? 5,
+      fillArea: initialConfig.fillAreaY1 ?? false,
+      customTitle: initialConfig.customTitle ?? '',
+      customY1Label: initialConfig.customY1Label ?? '',
+      y1Min: initialConfig.y1Min ?? '',
+      y1Max: initialConfig.y1Max ?? '',
+      customY2Label: initialConfig.customY2Label ?? '',
+      y2Min: initialConfig.y2Min ?? '',
+      y2Max: initialConfig.y2Max ?? '',
+      timeResolution: initialConfig.timeResolution ?? 5,
+      traces: initialConfig.traces ?? {}
+    };
+
+    function setTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.classList.add('text-accentBlue', 'border-accentBlue');
+          btn.classList.remove('text-gray-500', 'border-transparent');
+        } else {
+          btn.classList.remove('text-accentBlue', 'border-accentBlue');
+          btn.classList.add('text-gray-500', 'border-transparent');
+        }
+      });
+      document.querySelectorAll('.tab-section').forEach(sec => {
+        if (sec.id === 'section-' + tabId) {
+          sec.classList.remove('hidden');
+        } else {
+          sec.classList.add('hidden');
+        }
+      });
+    }
+
+    function toggleKey(key) {
+      graphConfig[key] = !graphConfig[key];
+      syncToggleUI(key);
+      if (key === 'showMarkers') {
+        const el = document.getElementById('marker-size-container');
+        if (graphConfig.showMarkers) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      }
+      renderPlot();
+    }
+
+    function syncToggleUI(key) {
+      const el = document.getElementById('toggle-' + key);
+      if (!el) return;
+      const circle = el.querySelector('.circle');
+      if (graphConfig[key]) {
+        el.classList.add('bg-accentBlue');
+        el.classList.remove('bg-gray-700');
+        circle.classList.add('left-[18px]');
+        circle.classList.remove('left-0.5');
+      } else {
+        el.classList.remove('bg-accentBlue');
+        el.classList.add('bg-gray-700');
+        circle.classList.add('left-0.5');
+        circle.classList.remove('left-[18px]');
+      }
+    }
+
+    function updateInput(key, val) {
+      graphConfig[key] = val;
+      renderPlot();
+    }
+
+    function updateMarkerSize(val) {
+      graphConfig.markerSize = val;
+      document.getElementById('markerSize-label').innerText = val;
+      renderPlot();
+    }
+
+    function updateResolution(val) {
+      graphConfig.timeResolution = val;
+      renderPlot();
+    }
+
+    function resetAllConfig() {
+      graphConfig.showGrid = true;
+      graphConfig.showLegend = true;
+      graphConfig.bgWhite = false;
+      graphConfig.smooth = false;
+      graphConfig.showMarkers = false;
+      graphConfig.markerSize = 5;
+      graphConfig.fillArea = false;
+      graphConfig.customTitle = '';
+      graphConfig.customY1Label = '';
+      graphConfig.y1Min = '';
+      graphConfig.y1Max = '';
+      graphConfig.customY2Label = '';
+      graphConfig.y2Min = '';
+      graphConfig.y2Max = '';
+      graphConfig.timeResolution = 5;
+      graphConfig.traces = {};
+
+      // Sync form controls
+      document.getElementById('input-customTitle').value = '';
+      document.getElementById('input-customY1Label').value = '';
+      document.getElementById('input-y1Min').value = '';
+      document.getElementById('input-y1Max').value = '';
+      document.getElementById('input-customY2Label').value = '';
+      document.getElementById('input-y2Min').value = '';
+      document.getElementById('input-y2Max').value = '';
+      document.getElementById('select-resolution').value = '5';
+      document.getElementById('slider-markerSize').value = '5';
+      document.getElementById('markerSize-label').innerText = '5';
+      document.getElementById('marker-size-container').classList.add('hidden');
+
+      ['showGrid', 'showLegend'].forEach(k => {
+        syncToggleUI(k);
+      });
+      ['bgWhite', 'smooth', 'showMarkers', 'fillArea'].forEach(k => {
+        syncToggleUI(k);
+      });
+
+      pinnedPoints.length = 0;
+      updatePinCounter();
+      renderLinesTab();
+      renderPlot();
+    }
+
+    function renderLinesTab() {
+      const container = document.getElementById('lines-series-container');
+      if (!container) return;
+
+      container.innerHTML = baseData.map((trace, idx) => {
+        const name = trace.name || ('Series ' + (idx + 1));
+        if (!graphConfig.traces[name]) {
+          graphConfig.traces[name] = { visible: true, width: trace.line?.width || 1.5, style: trace.line?.dash || 'solid' };
+        }
+        const custom = graphConfig.traces[name];
+        const isVisibleChecked = custom.visible ? 'checked' : '';
+        const dashOptions = [
+          { val: 'solid', label: '— Solid' },
+          { val: 'dash', label: '- - Dashed' },
+          { val: 'dot', label: '··· Dotted' },
+          { val: 'dashdot', label: '-·- Dash-Dot' },
+          { val: 'longdash', label: '— Long Dash' }
+        ];
+        const dashSelect = dashOptions.map(opt => {
+          const selected = custom.style === opt.val ? 'selected' : '';
+          return '<option value="' + opt.val + '" ' + selected + '>' + opt.label + '</option>';
+        }).join('');
+
+        return '<div class="border border-borderV bg-[#0F172A]/40 rounded p-2 flex flex-col gap-2 shrink-0 mb-1">' +
+          '<div class="flex items-center justify-between">' +
+            '<span class="font-bold text-[9px] uppercase tracking-wider text-gray-300 truncate w-32" title="' + name + '">' + name + '</span>' +
+            '<label class="flex items-center gap-1 cursor-pointer select-none text-gray-400 text-[8px]">' +
+              'Visible ' +
+              '<input type="checkbox" ' + isVisibleChecked + ' onchange="updateTraceVisible(\'' + name + '\', this.checked)" class="w-3.5 h-3.5 rounded border-gray-700 bg-gray-900 text-accentBlue accent-accentBlue cursor-pointer" />' +
+            '</label>' +
+          '</div>' +
+          '<div class="flex items-center gap-2">' +
+            '<span class="text-gray-500 text-[8px] w-10">Width</span>' +
+            '<input type="range" min="0.5" max="5" step="0.5" value="' + custom.width + '" oninput="updateTraceWidth(\'' + name + '\', parseFloat(this.value))" class="flex-1 h-1 accent-accentBlue cursor-pointer" />' +
+            '<span class="text-accentBlue text-[8px] w-5 text-right font-bold" id="width-val-' + idx + '">' + Number(custom.width).toFixed(1) + '</span>' +
+          '</div>' +
+          '<div class="flex items-center gap-2">' +
+            '<span class="text-gray-400 text-[8px] w-10">Dash</span>' +
+            '<select onchange="updateTraceStyle(\'' + name + '\', this.value)" class="flex-1 h-5 bg-[#0F172A] border border-gray-700 rounded px-1 text-[8px] text-white focus:outline-none">' +
+              dashSelect +
+            '</select>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function updateTraceVisible(name, val) {
+      graphConfig.traces[name].visible = val;
+      renderPlot();
+    }
+
+    function updateTraceWidth(name, val) {
+      graphConfig.traces[name].width = val;
+      const idx = baseData.findIndex(t => (t.name || '') === name);
+      if (idx >= 0) {
+        const el = document.getElementById('width-val-' + idx);
+        if (el) el.innerText = val.toFixed(1);
+      }
+      renderPlot();
+    }
+
+    function updateTraceStyle(name, val) {
+      graphConfig.traces[name].style = val;
+      renderPlot();
+    }
+
+    function renderPlot() {
+      const bg = graphConfig.bgWhite ? '#FFFFFF' : '#151F32';
+      const fontColor = graphConfig.bgWhite ? '#333333' : '#E0E0E0';
+      const gridColor = graphConfig.bgWhite ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.06)';
+
+      const res = graphConfig.timeResolution || 5;
+      const step = res / 5;
+
+      const modifiedData = baseData.map((trace, traceIdx) => {
+        // 1. Downsample
+        let dx = trace.x;
+        let dy = trace.y;
+        if (step > 1 && trace.x && trace.y) {
+          dx = [];
+          dy = [];
+          for (let i = 0; i < trace.x.length; i += step) {
+            dx.push(trace.x[i]);
+            dy.push(trace.y[i]);
+          }
+        }
+
+        // 2. Apply styling from graphConfig.traces
+        const name = trace.name || ('Series ' + (traceIdx + 1));
+        const custom = graphConfig.traces[name] || { visible: true, width: trace.line?.width || 1.5, style: trace.line?.dash || 'solid' };
+        const mode = graphConfig.showMarkers ? 'lines+markers' : 'lines';
+
+        const traceObj = {
+          ...trace,
+          x: dx,
+          y: dy,
+          visible: custom.visible,
+          mode: mode,
+          line: {
+            ...trace.line,
+            width: custom.width,
+            shape: graphConfig.smooth ? 'spline' : (trace.line?.shape ?? 'linear')
+          }
+        };
+
+        if (graphConfig.showMarkers) {
+          traceObj.marker = { size: graphConfig.markerSize };
+        }
+        if (custom.style !== 'solid') {
+          traceObj.line.dash = custom.style;
+        }
+        if (graphConfig.fillArea && !trace.yaxis) {
+          traceObj.fill = 'tozeroy';
+          traceObj.fillcolor = (trace.line?.color ?? '#0072BD') + '22';
+        }
+        return traceObj;
+      });
+
+      const annotations = pinnedPoints.map(pt => ({
+        x: pt.x,
+        y: pt.y,
+        yref: pt.yref,
+        xref: 'x',
+        text: pt.text,
+        showarrow: true,
+        arrowhead: 2,
+        arrowcolor: pt.color,
+        arrowsize: 1,
+        arrowwidth: 1.5,
+        ax: pt.ax,
+        ay: pt.ay,
+        bgcolor: 'rgba(255,255,255,0.94)',
+        bordercolor: pt.color,
+        borderwidth: 1.5,
+        borderpad: 4,
+        opacity: 0.97,
+        font: { family: 'Arial, sans-serif', size: 8, color: '#111111' }
+      }));
+
+      // Apply axis limit overrides in offline HTML
+      const hasY1Min = graphConfig.y1Min !== '';
+      const hasY1Max = graphConfig.y1Max !== '';
+      let y1Range = baseLayout.yaxis?.range;
+      if (hasY1Min || hasY1Max) {
+        const defaultMin = baseLayout.yaxis?.range ? baseLayout.yaxis.range[0] : -80;
+        const defaultMax = baseLayout.yaxis?.range ? baseLayout.yaxis.range[1] : 80;
+        y1Range = [
+          hasY1Min ? parseFloat(graphConfig.y1Min) : defaultMin,
+          hasY1Max ? parseFloat(graphConfig.y1Max) : defaultMax
+        ];
+      }
+
+      const hasY2Min = graphConfig.y2Min !== '';
+      const hasY2Max = graphConfig.y2Max !== '';
+      let y2Range = null;
+      if (hasY2Min || hasY2Max) {
+        // Find a default right axis range to fall back on
+        let defaultMin = 0;
+        let defaultMax = 100;
+        if (baseLayout.yaxis6?.range) {
+          defaultMin = baseLayout.yaxis6.range[0];
+          defaultMax = baseLayout.yaxis6.range[1];
+        } else if (baseLayout.yaxis2?.range) {
+          defaultMin = baseLayout.yaxis2.range[0];
+          defaultMax = baseLayout.yaxis2.range[1];
+        }
+        y2Range = [
+          hasY2Min ? parseFloat(graphConfig.y2Min) : defaultMin,
+          hasY2Max ? parseFloat(graphConfig.y2Max) : defaultMax
+        ];
+      }
+
+      const modifiedLayout = {
+        ...baseLayout,
+        title: {
+          text: '<b>' + (graphConfig.customTitle || baseLayout.title?.text || '') + '</b>',
+          font: { family: 'Arial, sans-serif', size: 12, color: fontColor }
+        },
+        paper_bgcolor: bg,
+        plot_bgcolor: bg,
+        font: { family: 'Arial, sans-serif', size: 9, color: fontColor },
+        showlegend: graphConfig.showLegend,
+        xaxis: {
+          ...baseLayout.xaxis,
+          showgrid: graphConfig.showGrid,
+          gridcolor: gridColor,
+          tickfont: { color: fontColor }
+        },
+        yaxis: {
+          ...baseLayout.yaxis,
+          title: { text: '<b>' + (graphConfig.customY1Label || baseLayout.yaxis?.title?.text || '') + '</b>', font: { color: '#0072BD', size: 10 } },
+          showgrid: graphConfig.showGrid,
+          gridcolor: gridColor,
+          tickfont: { color: '#0072BD' },
+          ...(y1Range ? { range: y1Range } : {})
+        },
+        annotations: annotations.concat(baseLayout.annotations || [])
+      };
+
+      if (modifiedLayout.xaxis2) {
+        modifiedLayout.xaxis2.showgrid = graphConfig.showGrid;
+        modifiedLayout.xaxis2.gridcolor = gridColor;
+        modifiedLayout.xaxis2.tickfont = { color: fontColor };
+      }
+      if (modifiedLayout.xaxis3) {
+        modifiedLayout.xaxis3.showgrid = graphConfig.showGrid;
+        modifiedLayout.xaxis3.gridcolor = gridColor;
+        modifiedLayout.xaxis3.tickfont = { color: fontColor };
+      }
+
+      // Handle other axes in subplots (grid/report view)
+      if (modifiedLayout.yaxis3) {
+        modifiedLayout.yaxis3.showgrid = graphConfig.showGrid;
+        modifiedLayout.yaxis3.gridcolor = gridColor;
+        modifiedLayout.yaxis3.title.text = '<b>' + (graphConfig.customY1Label || baseLayout.yaxis3.title?.text || '') + '</b>';
+        if (y1Range) modifiedLayout.yaxis3.range = y1Range;
+      }
+      if (modifiedLayout.yaxis5) {
+        modifiedLayout.yaxis5.showgrid = graphConfig.showGrid;
+        modifiedLayout.yaxis5.gridcolor = gridColor;
+      }
+      if (modifiedLayout.yaxis6) {
+        modifiedLayout.yaxis6.title.text = '<b>' + (graphConfig.customY2Label || baseLayout.yaxis6.title?.text || '') + '</b>';
+        if (y2Range) modifiedLayout.yaxis6.range = y2Range;
+      }
+      if (modifiedLayout.yaxis2) {
+        if (y2Range && !modifiedLayout.yaxis6) {
+          // Only override y2 range in single plot
+          modifiedLayout.yaxis2.range = y2Range;
+        }
+        if (modifiedLayout.yaxis2.title) {
+          modifiedLayout.yaxis2.title.text = '<b>' + (graphConfig.customY2Label || baseLayout.yaxis2.title?.text || '') + '</b>';
+        }
+      }
+
+      Plotly.newPlot('chart', modifiedData, modifiedLayout, { displaylogo: false, responsive: true }).then(gd => {
+        gd.on('plotly_click', handlePlotClick);
+      });
+    }
+
+    function handlePlotClick(eventData) {
+      if (!eventData || !eventData.points || eventData.points.length === 0) return;
+      const pt = eventData.points[0];
+      if (pt.x == null || pt.y == null) return;
+
+      const xVal = String(pt.x);
+      const yVal = Number(pt.y);
+      const name = pt.data?.name || 'Series';
+      const color = pt.data?.line?.color || '#00A3FF';
+      const isY2 = pt.data?.yaxis === 'y2' || pt.data?.yaxis === 'y4' || pt.data?.yaxis === 'y6';
+      const id = xVal + '__' + name;
+
+      const existingIdx = pinnedPoints.findIndex(p => p.id === id);
+      if (existingIdx >= 0) {
+        pinnedPoints.splice(existingIdx, 1);
+      } else {
+        const offset = pinnedPoints.length % 2 === 0 ? -40 : 40;
+        pinnedPoints.push({
+          id: id,
+          x: xVal,
+          y: yVal,
+          yref: isY2 ? (pt.data?.yaxis || 'y2') : (pt.data?.yaxis || 'y'),
+          text: '<b>' + xVal + '</b><br>' + yVal.toFixed(3) + ' (' + name + ')',
+          color: color,
+          ax: 30,
+          ay: offset
+        });
+      }
+      renderPlot();
+      updatePinCounter();
+    }
+
+    function updatePinCounter() {
+      const container = document.getElementById('pin-counter-container');
+      if (!container) return;
+      if (pinnedPoints.length > 0) {
+        container.innerHTML = '<span class="bg-accentBlue/10 text-accentBlue border border-accentBlue/30 px-1.5 py-0.5 rounded text-[8px] font-bold">' +
+          pinnedPoints.length + ' pin' + (pinnedPoints.length > 1 ? 's' : '') +
+          '</span>' +
+          '<button onclick="clearAllPins()" class="text-[8px] font-mono text-gray-400 hover:text-red-400 border border-borderV hover:border-red-400/30 px-1.5 py-0.5 rounded transition-colors ml-1" title="Clear all pins">Clear</button>';
+      } else {
+        container.innerHTML = '';
+      }
+    }
+
+    function clearAllPins() {
+      pinnedPoints.length = 0;
+      renderPlot();
+      updatePinCounter();
+    }
+
+    // Initialize inputs with active config values
+    window.onload = () => {
+      document.getElementById('input-customTitle').value = graphConfig.customTitle;
+      document.getElementById('input-customY1Label').value = graphConfig.customY1Label;
+      document.getElementById('input-y1Min').value = graphConfig.y1Min;
+      document.getElementById('input-y1Max').value = graphConfig.y1Max;
+      document.getElementById('input-customY2Label').value = graphConfig.customY2Label;
+      document.getElementById('input-y2Min').value = graphConfig.y2Min;
+      document.getElementById('input-y2Max').value = graphConfig.y2Max;
+      document.getElementById('select-resolution').value = String(graphConfig.timeResolution);
+      document.getElementById('slider-markerSize').value = String(graphConfig.markerSize);
+      document.getElementById('markerSize-label').innerText = String(graphConfig.markerSize);
+
+      if (graphConfig.showMarkers) {
+        document.getElementById('marker-size-container').classList.remove('hidden');
+      }
+
+      ['showGrid', 'showLegend', 'bgWhite', 'smooth', 'showMarkers', 'fillArea'].forEach(k => {
+        syncToggleUI(k);
+      });
+
+      renderLinesTab();
+      renderPlot();
+      updatePinCounter();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<svg width="100%" height="100%" viewBox="140 40 400 400" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>PowerFlow App Icon</title>
+  <desc>Baby pink rounded square app icon with energy flow lightning bolt and animated flow lines</desc>
+  <defs>
+    <clipPath id="rounded-clip">
+      <rect x="140" y="40" width="400" height="400" rx="80"/>
+    </clipPath>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect x="140" y="40" width="400" height="400" rx="80" fill="#F9B8D0"/>
+  <!-- Subtle inner border -->
+  <rect x="140" y="40" width="400" height="400" rx="80" fill="none" stroke="#F48CB1" stroke-width="3"/>
+
+  <!-- Soft inner highlight top -->
+  <rect x="140" y="40" width="400" height="80" rx="80" fill="#FDE2EF" opacity="0.5" clip-path="url(#rounded-clip)"/>
+
+  <!-- Flow lines background - horizontal wavy lines suggesting energy flow -->
+  <g opacity="0.25" stroke="#C2185B" stroke-width="3" fill="none" stroke-linecap="round">
+    <path d="M170 200 Q230 185 290 200 Q350 215 410 200 Q470 185 510 200"/>
+    <path d="M170 230 Q230 215 290 230 Q350 245 410 230 Q470 215 510 230"/>
+    <path d="M170 260 Q230 245 290 260 Q350 275 410 260 Q470 245 510 260"/>
+    <path d="M170 290 Q230 275 290 290 Q350 305 410 290 Q470 275 510 290"/>
+    <path d="M170 320 Q230 305 290 320 Q350 335 410 320 Q470 305 510 320"/>
+    <path d="M170 170 Q230 155 290 170 Q350 185 410 170 Q470 155 510 170"/>
+  </g>
+
+  <!-- Lightning bolt (energy/power symbol) centered -->
+  <path d="M370 90 L300 250 L350 250 L290 390 L410 210 L355 210 L415 90 Z" fill="#D81B60" opacity="0.9"/>
+  <!-- Lightning bolt highlight -->
+  <path d="M370 90 L330 190 L360 190 L310 310 L360 210 L355 210 L415 90 Z" fill="#F06292" opacity="0.5"/>
+
+  <!-- Circular flow ring around bolt -->
+  <circle cx="340" cy="240" r="105" fill="none" stroke="#E91E8C" stroke-width="5" opacity="0.3" stroke-dasharray="18 10"/>
+  <circle cx="340" cy="240" r="85" fill="none" stroke="#F48CB1" stroke-width="2" opacity="0.4"/>
+
+  <!-- Small energy dots along the ring -->
+  <circle cx="340" cy="135" r="6" fill="#C2185B" opacity="0.7"/>
+  <circle cx="445" cy="240" r="6" fill="#C2185B" opacity="0.7"/>
+  <circle cx="340" cy="345" r="6" fill="#C2185B" opacity="0.7"/>
+  <circle cx="235" cy="240" r="6" fill="#C2185B" opacity="0.7"/>
+</svg>

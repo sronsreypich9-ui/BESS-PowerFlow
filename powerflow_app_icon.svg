@@ -1,0 +1,47 @@
+<svg width="100%" viewBox="0 0 680 680" role="img" style="" xmlns="http://www.w3.org/2000/svg">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">PowerFlow App Icon</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Baby pink rounded square app icon with energy flow lightning bolt and animated flow lines</desc>
+
+  <defs>
+    <clipPath id="rounded-clip">
+      <rect x="140" y="40" width="400" height="400" rx="80"/>
+    </clipPath>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect x="140" y="40" width="400" height="400" rx="80" fill="#F9B8D0" style="fill:rgb(249, 184, 208);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Subtle inner border -->
+  <rect x="140" y="40" width="400" height="400" rx="80" fill="none" stroke="#F48CB1" stroke-width="3" style="fill:none;stroke:rgb(244, 140, 177);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Soft inner highlight top -->
+  <rect x="140" y="40" width="400" height="80" rx="80" fill="#FDE2EF" opacity="0.5" clip-path="url(#rounded-clip)" style="fill:rgb(253, 226, 239);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Flow lines background - horizontal wavy lines suggesting energy flow -->
+  <g opacity="0.25" stroke="#C2185B" stroke-width="3" fill="none" stroke-linecap="round" style="fill:none;stroke:rgb(194, 24, 91);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:round;stroke-linejoin:miter;opacity:0.25;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
+    <path d="M170 200 Q230 185 290 200 Q350 215 410 200 Q470 185 510 200" style="fill:none;stroke:rgb(194, 24, 91);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:round;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M170 230 Q230 215 290 230 Q350 245 410 230 Q470 215 510 230" style="fill:none;stroke:rgb(194, 24, 91);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:round;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M170 260 Q230 245 290 260 Q350 275 410 260 Q470 245 510 260" style="fill:none;stroke:rgb(194, 24, 91);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:round;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M170 290 Q230 275 290 290 Q350 305 410 290 Q470 275 510 290" style="fill:none;stroke:rgb(194, 24, 91);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:round;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M170 320 Q230 305 290 320 Q350 335 410 320 Q470 305 510 320" style="fill:none;stroke:rgb(194, 24, 91);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:round;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M170 170 Q230 155 290 170 Q350 185 410 170 Q470 155 510 170" style="fill:none;stroke:rgb(194, 24, 91);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:round;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  </g>
+
+  <!-- Lightning bolt (energy/power symbol) centered -->
+  <path d="M370 90 L300 250 L350 250 L290 390 L410 210 L355 210 L415 90 Z" fill="#D81B60" opacity="0.9" style="fill:rgb(216, 27, 96);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.9;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Lightning bolt highlight -->
+  <path d="M370 90 L330 190 L360 190 L310 310 L360 210 L355 210 L415 90 Z" fill="#F06292" opacity="0.5" style="fill:rgb(240, 98, 146);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Circular flow ring around bolt -->
+  <circle cx="340" cy="240" r="105" fill="none" stroke="#E91E8C" stroke-width="5" opacity="0.3" stroke-dasharray="18 10" style="fill:none;stroke:rgb(233, 30, 140);color:rgb(255, 255, 255);stroke-width:5px;stroke-dasharray:18px, 10px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.3;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="340" cy="240" r="85" fill="none" stroke="#F48CB1" stroke-width="2" opacity="0.4" style="fill:none;stroke:rgb(244, 140, 177);color:rgb(255, 255, 255);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.4;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Small energy dots along the ring -->
+  <circle cx="340" cy="135" r="6" fill="#C2185B" opacity="0.7" style="fill:rgb(194, 24, 91);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="445" cy="240" r="6" fill="#C2185B" opacity="0.7" style="fill:rgb(194, 24, 91);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="340" cy="345" r="6" fill="#C2185B" opacity="0.7" style="fill:rgb(194, 24, 91);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="235" cy="240" r="6" fill="#C2185B" opacity="0.7" style="fill:rgb(194, 24, 91);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Label -->
+  <text x="340" y="500" text-anchor="middle" font-family="system-ui, sans-serif" font-size="32" font-weight="600" fill="#C2185B" style="fill:rgb(194, 24, 91);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:system-ui, sans-serif;font-size:32px;font-weight:600;text-anchor:middle;dominant-baseline:auto">PowerFlow</text>
+  <text x="340" y="538" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" font-weight="400" fill="#E91E8C" opacity="0.75" style="fill:rgb(233, 30, 140);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.75;font-family:system-ui, sans-serif;font-size:20px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Energy Flow Tracking</text>
+</svg>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      window.global = window;
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Performance & Project Evaluation (PPE 20%)</title>
+    <!-- SheetJS (XLSX) -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- FFlate -->
+    <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
+    <!-- WASM LibArchive -->
+    <script type="module">
+      import { Archive } from 'https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/libarchive.js';
+      window.__LibArchive = Archive;
+    </script>
+    <!-- WASM NodeUnrar -->
+    <script type="module">
+      import { createExtractorFromData } from 'https://esm.sh/node-unrar-js@2.0.2';
+      window.__UnrarCreate = createExtractorFromData;
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

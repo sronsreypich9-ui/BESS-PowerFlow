@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EMS MATLAB Output Schema",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "project": { "type": "string" },
+        "date": { "type": "string" },
+        "layout": {
+          "type": "object",
+          "properties": {
+            "tiled": { "type": "boolean" },
+            "rows": { "type": "integer" },
+            "title": { "type": "string" }
+          },
+          "required": ["title"]
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": { "type": "string" },
+              "label": { "type": "string" },
+              "unit": { "type": "string" },
+              "axis": { "type": "string", "enum": ["y1", "y2"] },
+              "color": { "type": "string" },
+              "subplot": { "type": "integer" }
+            },
+            "required": ["key", "label", "unit", "axis", "color", "subplot"]
+          }
+        }
+      },
+      "required": ["project", "layout", "fields"]
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "timestamps": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["timestamps"],
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "number" }
+      }
+    }
+  },
+  "required": ["metadata", "data"]
+}

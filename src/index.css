@@ -1,0 +1,393 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+@source not "../release";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar-bg);
+    --color-sidebar-bg: var(--sidebar-bg);
+    --color-chart-bg: var(--chart-bg);
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-accent-green: var(--accent-green);
+    --color-accent-orange: var(--accent-orange);
+    --color-accent-red: var(--accent-red);
+    --color-accent-cyan: var(--accent-cyan);
+    --color-active-tab: var(--active-tab);
+    
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    
+    --color-panel: var(--panel);
+    --color-surface: var(--surface);
+    --color-border-v: var(--border-v);
+    --color-accent-blue: var(--accent-blue);
+    
+    --radius-sm: 0.125rem;
+    --radius-md: 0.25rem;
+    --radius-lg: var(--radius);
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    --radius-3xl: 1.5rem;
+    --radius-4xl: 2rem;
+}
+
+:root {
+    --background: #F1F5F9;
+    --foreground: #0F172A;
+    --card: #FFFFFF;
+    --card-foreground: #0F172A;
+    --popover: #FFFFFF;
+    --popover-foreground: #0F172A;
+    --primary: #2563EB;
+    --primary-foreground: #FFFFFF;
+    --secondary: #E2E8F0;
+    --secondary-foreground: #0F172A;
+    --muted: rgba(15, 23, 42, 0.05);
+    --muted-foreground: rgba(15, 23, 42, 0.5);
+    --accent: #2563EB;
+    --accent-foreground: #FFFFFF;
+    --destructive: #DC2626;
+    --border: rgba(0, 0, 0, 0.09);
+    --input: rgba(0, 0, 0, 0.09);
+    --ring: #2563EB;
+    
+    --panel: #FFFFFF;
+    --surface: #FFFFFF;
+    --border-v: rgba(0, 0, 0, 0.09);
+    
+    --sidebar-bg: #FFFFFF;
+    --chart-bg: #FFFFFF;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    
+    --accent-blue: #2563EB;
+    --accent-green: #16A34A;
+    --accent-orange: #EA580C;
+    --accent-red: #DC2626;
+    --accent-cyan: #0284C7;
+    --active-tab: #2563EB;
+    
+    --chart-1: #2563EB;
+    --chart-2: #16A34A;
+    --chart-3: #EA580C;
+    --chart-4: #DC2626;
+    --chart-5: #8B5CF6;
+    --radius: 0.5rem;
+    
+    --sidebar-ring: #2563EB;
+    --sidebar-border: rgba(0, 0, 0, 0.09);
+    --sidebar-accent: rgba(15, 23, 42, 0.04);
+    --sidebar-accent-foreground: #0F172A;
+}
+
+.dark {
+    --background: #0B1220;
+    --foreground: #F0F4F8;
+    --card: #111827;
+    --card-foreground: #F0F4F8;
+    --popover: #1E293B;
+    --popover-foreground: #F0F4F8;
+    --primary: #38BDF8;
+    --primary-foreground: #0B1220;
+    --secondary: #1F2937;
+    --secondary-foreground: #F0F4F8;
+    --muted: rgba(255, 255, 255, 0.05);
+    --muted-foreground: rgba(255, 255, 255, 0.5);
+    --accent: #38BDF8;
+    --accent-foreground: #0B1220;
+    --destructive: #F87171;
+    --border: rgba(255, 255, 255, 0.07);
+    --input: rgba(255, 255, 255, 0.07);
+    --ring: #38BDF8;
+    
+    --panel: #111827;
+    --surface: #1F2937;
+    --border-v: rgba(255, 255, 255, 0.07);
+    
+    --sidebar-bg: #0F1826;
+    --chart-bg: #0D1520;
+    --text-primary: #F0F4F8;
+    --text-secondary: #8896A7;
+    
+    --accent-blue: #38BDF8;
+    --accent-green: #34D399;
+    --accent-orange: #FB923C;
+    --accent-red: #F87171;
+    --accent-cyan: #22D3EE;
+    --active-tab: #1D4ED8;
+
+    --chart-1: #38BDF8;
+    --chart-2: #34D399;
+    --chart-3: #FB923C;
+    --chart-4: #F87171;
+    --chart-5: #a78bfa;
+    
+    --sidebar-ring: #38BDF8;
+    --sidebar-border: rgba(255, 255, 255, 0.07);
+    --sidebar-accent: rgba(0, 212, 255, 0.08);
+    --sidebar-accent-foreground: #F0F4F8;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body, html {
+    @apply bg-background text-foreground text-xs overflow-hidden h-full w-full p-0 m-0;
+    }
+  html {
+    @apply font-sans;
+    }
+    
+  .grid-overlay {
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
+.markdown-body {
+  @apply text-[13px] leading-relaxed;
+}
+
+.markdown-body p {
+  @apply mb-3 last:mb-0;
+}
+
+.markdown-body strong {
+  @apply font-bold text-foreground;
+}
+
+.markdown-body em {
+  @apply italic;
+}
+
+.markdown-body ul {
+  @apply list-disc list-outside ml-4 mb-3;
+}
+
+.markdown-body ol {
+  @apply list-decimal list-outside ml-4 mb-3;
+}
+
+.markdown-body li {
+  @apply mb-1;
+}
+
+.markdown-body code {
+  @apply font-mono text-[11px] bg-foreground/10 px-1.5 py-0.5 rounded text-accent-blue;
+}
+
+.markdown-body pre {
+  @apply bg-surface/50 border border-foreground/10 rounded-md p-3 mb-3 overflow-x-auto;
+}
+
+.markdown-body pre code {
+  @apply bg-transparent px-0 py-0 text-foreground text-[11px];
+}
+
+.markdown-body a {
+  @apply text-accent-blue hover:underline;
+}
+
+.markdown-body blockquote {
+  @apply border-l-2 border-accent-blue pl-3 text-foreground/70 italic mb-3;
+}
+
+/* === Processing Animation === */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1.4); }
+}
+
+@keyframes waveSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 2.5s linear infinite;
+}
+
+.wave-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+}
+
+.wave-1 { top: 35%; animation: waveSlide 4s ease-in-out infinite; }
+.wave-2 { top: 50%; animation: waveSlide 4s 0.7s ease-in-out infinite; }
+.wave-3 { top: 65%; animation: waveSlide 4s 1.4s ease-in-out infinite; }
+
+/* === Ingestion Scanning & Splash Animations === */
+@keyframes scan-anim {
+  0% { top: 0%; opacity: 0; }
+  15% { opacity: 0.85; }
+  85% { opacity: 0.85; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-scan {
+  animation: scan-anim 1.8s linear infinite;
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* === BESS Energy Flow Animations === */
+@keyframes flow-particle {
+  0% {
+    stroke-dashoffset: 60;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-particle-flow {
+  stroke-dasharray: 8, 8;
+  animation: flow-particle 1.5s linear infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 2px var(--accent-blue)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 8px var(--accent-blue)); }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.hover-card-redesign {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+}
+
+.hover-card-redesign:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -8px rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.focus-ring-redesign:focus-visible {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--accent-blue);
+}
+
+/* === Live Pulse Clock Indicator === */
+@keyframes pulse-clock {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.animate-pulse-clock {
+  animation: pulse-clock 1.5s ease-in-out infinite;
+}
+
+/* === Staggered SVG particle travel animations === */
+@keyframes particle-travel {
+  0% {
+    stroke-dashoffset: 80;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-particle-travel-fast {
+  stroke-dasharray: 6, 24;
+  animation: particle-travel 1.5s linear infinite;
+}
+
+.animate-particle-travel-medium {
+  stroke-dasharray: 6, 24;
+  animation: particle-travel 2.0s linear infinite;
+}
+
+.animate-particle-travel-slow {
+  stroke-dasharray: 6, 24;
+  animation: particle-travel 2.5s linear infinite;
+}
+
+/* === Vertical Battery Fill Pulse === */
+@keyframes charging-pulse {
+  0%, 100% { fill-opacity: 0.9; }
+  50% { fill-opacity: 0.45; }
+}
+.animate-battery-charging {
+  animation: charging-pulse 1.8s ease-in-out infinite;
+}
+
+.hover-btn-micro {
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-btn-micro:hover {
+  transform: scale(1.01);
+}
+.hover-btn-micro:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-particle-flow,
+  .animate-particle-travel-fast,
+  .animate-particle-travel-medium,
+  .animate-particle-travel-slow,
+  .animate-battery-charging,
+  .animate-pulse-clock,
+  .animate-glow-pulse {
+    animation: none !important;
+    stroke-dasharray: none !important;
+  }
+}
+

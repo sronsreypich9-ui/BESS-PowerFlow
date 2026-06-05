@@ -202,6 +202,94 @@ function findMatlabPath() {
   return "matlab"; // Fallback to PATH environment
 }
 
+const saveVisibleFigContent = `function saveVisibleFig(figH, varargin)
+    set(figH, 'Visible', 'on');
+    savefig(figH, varargin{:});
+end
+`;
+
+const doSaveFigContent = `function doSaveFig(figH, outFolder, fname, pinnedPoints, t)
+    applyDataTips(figH, pinnedPoints, t);
+    set(figH, 'Visible', 'on');
+    savefig(figH, fullfile(outFolder, fname));
+end
+`;
+
+const applyDataTipsContent = `function applyDataTips(figH, pinnedPoints, t)
+    try
+        if isempty(pinnedPoints), return; end
+        if isstruct(pinnedPoints)
+            ptsCell = num2cell(pinnedPoints);
+        elseif iscell(pinnedPoints)
+            ptsCell = pinnedPoints;
+        else
+            ptsCell = {pinnedPoints};
+        end
+        
+        for pi = 1:numel(ptsCell)
+            if iscell(ptsCell)
+                pt = ptsCell{pi};
+            else
+                pt = ptsCell(pi);
+            end
+            
+            t_pinned = datetime(pt.xValue, 'InputFormat', 'yyyy-MM-dd HH:mm:ss');
+            if isnat(t_pinned), continue; end
+            [~, idx] = min(abs(t - t_pinned));
+            
+            lines = [findobj(figH, 'Type', 'line'); findobj(figH, 'Type', 'stair')];
+            targetLine = [];
+            
+            for li = 1:numel(lines)
+                dispName = lines(li).DisplayName;
+                if isempty(dispName), continue; end
+                
+                cleanedDisp = lower(regexprep(dispName, '[^a-zA-Z0-9]', ''));
+                cleanedTarget = lower(regexprep(pt.seriesName, '[^a-zA-Z0-9]', ''));
+                
+                if contains(cleanedDisp, cleanedTarget) || contains(cleanedTarget, cleanedDisp)
+                    targetLine = lines(li);
+                    break;
+                end
+            end
+            
+            if isempty(targetLine) && ~isempty(lines)
+                minDiff = Inf;
+                for li = 1:numel(lines)
+                    yData = lines(li).YData;
+                    if numel(yData) >= idx
+                        yVal = yData(idx);
+                        diffVal = abs(yVal - pt.yValue);
+                        if diffVal < minDiff && diffVal < 0.05
+                            minDiff = diffVal;
+                            targetLine = lines(li);
+                        end
+                    end
+                end
+            end
+            
+            if ~isempty(targetLine)
+                try
+                    dt = datatip(targetLine, 'DataIndex', idx);
+                    dt.FontSize = 8;
+                    dt.FontName = 'Helvetica';
+                catch
+                    try
+                        axParent = targetLine.Parent;
+                        axes(axParent);
+                        text(t(idx), pt.yValue, sprintf('X: %s\\\\nY: %.4f', datestr(t(idx), 'dd-mmm-yyyy HH:MM:ss'), pt.yValue), ...
+                            'BackgroundColor','w','EdgeColor',[0.3 0.3 0.3],'FontSize',8,'Interpreter','none');
+                    catch
+                    end
+                end
+            end
+        end
+    catch ME
+        warning('Failed to populate programmatic MATLAB datatips: %s', ME.message);
+    end
+end
+`;
+
 ipcMain.handle("save-matlab-figures", async (_event, outputFolder, result) => {
   try {
     if (outputFolder && !fs.existsSync(outputFolder)) {
@@ -220,6 +308,9 @@ ipcMain.handle("save-matlab-figures", async (_event, outputFolder, result) => {
     if (!fs.existsSync(tmpDir)) {
       fs.mkdirSync(tmpDir, { recursive: true });
     }
+    fs.writeFileSync(path.join(tmpDir, "saveVisibleFig.m"), saveVisibleFigContent, "utf8");
+    fs.writeFileSync(path.join(tmpDir, "doSaveFig.m"), doSaveFigContent, "utf8");
+    fs.writeFileSync(path.join(tmpDir, "applyDataTips.m"), applyDataTipsContent, "utf8");
 
     const pluginsDir = app.isPackaged
       ? path.join(app.getPath("userData"), "engine", "plugins")
@@ -427,93 +518,6 @@ useJSONPayload = true;
 if ~isfolder(outFolder), mkdir(outFolder); end
 
 ${adaptedPlottingPart}
-
-function saveVisibleFig(figH, varargin)
-    set(figH, 'Visible', 'on');
-    savefig(figH, varargin{:});
-end
-
-function doSaveFig(figH, outFolder, fname, pinnedPoints, t)
-    applyDataTips(figH, pinnedPoints, t);
-    set(figH, 'Visible', 'on');
-    savefig(figH, fullfile(outFolder, fname));
-end
-
-function applyDataTips(figH, pinnedPoints, t)
-    try
-        if isempty(pinnedPoints), return; end
-        if isstruct(pinnedPoints)
-            ptsCell = num2cell(pinnedPoints);
-        elseif iscell(pinnedPoints)
-            ptsCell = pinnedPoints;
-        else
-            ptsCell = {pinnedPoints};
-        end
-        
-        for pi = 1:numel(ptsCell)
-            if iscell(ptsCell)
-                pt = ptsCell{pi};
-            else
-                pt = ptsCell(pi);
-            end
-            
-            t_pinned = datetime(pt.xValue, 'InputFormat', 'yyyy-MM-dd HH:mm:ss');
-            if isnat(t_pinned), continue; end
-            [~, idx] = min(abs(t - t_pinned));
-            
-            lines = [findobj(figH, 'Type', 'line'); findobj(figH, 'Type', 'stair')];
-            targetLine = [];
-            
-            % Match by DisplayName
-            for li = 1:numel(lines)
-                dispName = lines(li).DisplayName;
-                if isempty(dispName), continue; end
-                
-                cleanedDisp = lower(regexprep(dispName, '[^a-zA-Z0-9]', ''));
-                cleanedTarget = lower(regexprep(pt.seriesName, '[^a-zA-Z0-9]', ''));
-                
-                if contains(cleanedDisp, cleanedTarget) || contains(cleanedTarget, cleanedDisp)
-                    targetLine = lines(li);
-                    break;
-                end
-            end
-            
-            % Fallback: Match by closest Y value at index
-            if isempty(targetLine) && ~isempty(lines)
-                minDiff = Inf;
-                for li = 1:numel(lines)
-                    yData = lines(li).YData;
-                    if numel(yData) >= idx
-                        yVal = yData(idx);
-                        diffVal = abs(yVal - pt.yValue);
-                        if diffVal < minDiff && diffVal < 0.05
-                            minDiff = diffVal;
-                            targetLine = lines(li);
-                        end
-                    end
-                end
-            end
-            
-            if ~isempty(targetLine)
-                try
-                    dt = datatip(targetLine, 'DataIndex', idx);
-                    dt.FontSize = 8;
-                    dt.FontName = 'Helvetica';
-                catch
-                    try
-                        axParent = targetLine.Parent;
-                        axes(axParent);
-                        text(t(idx), pt.yValue, sprintf('X: %s\\\\nY: %.4f', datestr(t(idx), 'dd-mmm-yyyy HH:MM:ss'), pt.yValue), ...
-                            'BackgroundColor','w','EdgeColor',[0.3 0.3 0.3],'FontSize',8,'Interpreter','none');
-                    catch
-                    end
-                end
-            end
-        end
-    catch ME
-        warning('Failed to populate programmatic MATLAB datatips: %s', ME.message);
-    end
-end
 `;
           fs.writeFileSync(mScriptPath, finalScriptContent);
         } else {
@@ -825,88 +829,6 @@ catch ME
     disp('MATLAB_EXPORT_ERROR:');
     disp(ME.message);
 end
-
-function doSaveFig(figH, outFolder, fname, pinnedPoints, t)
-    applyDataTips(figH, pinnedPoints, t);
-    set(figH, 'Visible', 'on');
-    savefig(figH, fullfile(outFolder, fname));
-end
-
-function applyDataTips(figH, pinnedPoints, t)
-    try
-        if isempty(pinnedPoints), return; end
-        if isstruct(pinnedPoints)
-            ptsCell = num2cell(pinnedPoints);
-        elseif iscell(pinnedPoints)
-            ptsCell = pinnedPoints;
-        else
-            ptsCell = {pinnedPoints};
-        end
-        
-        for pi = 1:numel(ptsCell)
-            if iscell(ptsCell)
-                pt = ptsCell{pi};
-            else
-                pt = ptsCell(pi);
-            end
-            
-            t_pinned = datetime(pt.xValue, 'InputFormat', 'yyyy-MM-dd HH:mm:ss');
-            if isnat(t_pinned), continue; end
-            [~, idx] = min(abs(t - t_pinned));
-            
-            lines = [findobj(figH, 'Type', 'line'); findobj(figH, 'Type', 'stair')];
-            targetLine = [];
-            
-            % Match by DisplayName
-            for li = 1:numel(lines)
-                dispName = lines(li).DisplayName;
-                if isempty(dispName), continue; end
-                
-                cleanedDisp = lower(regexprep(dispName, '[^a-zA-Z0-9]', ''));
-                cleanedTarget = lower(regexprep(pt.seriesName, '[^a-zA-Z0-9]', ''));
-                
-                if contains(cleanedDisp, cleanedTarget) || contains(cleanedTarget, cleanedDisp)
-                    targetLine = lines(li);
-                    break;
-                end
-            end
-            
-            % Fallback: Match by closest Y value at index
-            if isempty(targetLine) && ~isempty(lines)
-                minDiff = Inf;
-                for li = 1:numel(lines)
-                    yData = lines(li).YData;
-                    if numel(yData) >= idx
-                        yVal = yData(idx);
-                        diffVal = abs(yVal - pt.yValue);
-                        if diffVal < minDiff && diffVal < 0.05
-                            minDiff = diffVal;
-                            targetLine = lines(li);
-                        end
-                    end
-                end
-            end
-            
-            if ~isempty(targetLine)
-                try
-                    dt = datatip(targetLine, 'DataIndex', idx);
-                    dt.FontSize = 8;
-                    dt.FontName = 'Helvetica';
-                catch
-                    try
-                        axParent = targetLine.Parent;
-                        axes(axParent);
-                        text(t(idx), pt.yValue, sprintf('X: %s\\nY: %.4f', datestr(t(idx), 'dd-mmm-yyyy HH:MM:ss'), pt.yValue), ...
-                            'BackgroundColor','w','EdgeColor',[0.3 0.3 0.3],'FontSize',8,'Interpreter','none');
-                    catch
-                    end
-                end
-            end
-        end
-    catch ME
-        warning('Failed to populate programmatic MATLAB datatips: %s', ME.message);
-    end
-end
 `;
       fs.writeFileSync(mScriptPath, finalScriptContent);
     }
@@ -920,6 +842,9 @@ end
       // Replace absolute path with relative temp_data.json path
       const permScriptContent = finalScriptContent.split(dataJsonPath).join('temp_data.json');
       fs.writeFileSync(permScriptPath, permScriptContent, "utf8");
+      fs.writeFileSync(path.join(outputFolder, "saveVisibleFig.m"), saveVisibleFigContent, "utf8");
+      fs.writeFileSync(path.join(outputFolder, "doSaveFig.m"), doSaveFigContent, "utf8");
+      fs.writeFileSync(path.join(outputFolder, "applyDataTips.m"), applyDataTipsContent, "utf8");
       console.log("[INFO] MATLAB backup files written to outputFolder:", outputFolder);
     } catch (permErr) {
       console.error("[ERROR] Failed to write backup MATLAB files:", permErr);
@@ -932,6 +857,11 @@ end
         try {
           if (fs.existsSync(dataJsonPath)) fs.unlinkSync(dataJsonPath);
           if (fs.existsSync(mScriptPath)) fs.unlinkSync(mScriptPath);
+          const helperFiles = ["saveVisibleFig.m", "doSaveFig.m", "applyDataTips.m"];
+          for (const hf of helperFiles) {
+            const hfPath = path.join(tmpDir, hf);
+            if (fs.existsSync(hfPath)) fs.unlinkSync(hfPath);
+          }
           if (fs.existsSync(tmpDir)) fs.rmdirSync(tmpDir);
         } catch (cleanupErr) {
           console.error("Cleanup failed:", cleanupErr);

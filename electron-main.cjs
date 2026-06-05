@@ -329,6 +329,14 @@ ipcMain.handle("save-matlab-figures", async (_event, outputFolder, result) => {
           const splitIndex = lastNewline !== -1 ? lastNewline + 1 : figIndex;
           const plottingPart = originalContent.substring(splitIndex);
           
+          // Adapt the plotting part to route figure saving to our safe functions that set 'Visible' to 'on'
+          let adaptedPlottingPart = plottingPart;
+          adaptedPlottingPart = adaptedPlottingPart.replace(
+            /saveFig\s*=\s*@\(\s*figH\s*,\s*fname\s*\)\s*savefig\(\s*figH\s*,\s*fullfile\(\s*outFolder\s*,\s*fname\s*\)\s*\)\s*;?/gi,
+            "saveFig = @(figH, fname) doSaveFig(figH, outFolder, fname, data.pinnedPoints, t);"
+          );
+          adaptedPlottingPart = adaptedPlottingPart.replace(/\bsavefig\(/gi, "saveVisibleFig(");
+
           finalScriptContent = `% PowerFlow ToolBox Adapted MATLAB Script
 data = jsondecode(fileread('${dataJsonPath}'));
 t = datetime(data.times, 'InputFormat', 'yyyy-MM-dd HH:mm:ss');
@@ -418,7 +426,94 @@ saveFig = @(figH, fname) savefig(figH, fullfile(outFolder, fname));
 useJSONPayload = true;
 if ~isfolder(outFolder), mkdir(outFolder); end
 
-${plottingPart}
+${adaptedPlottingPart}
+
+function saveVisibleFig(figH, varargin)
+    set(figH, 'Visible', 'on');
+    savefig(figH, varargin{:});
+end
+
+function doSaveFig(figH, outFolder, fname, pinnedPoints, t)
+    applyDataTips(figH, pinnedPoints, t);
+    set(figH, 'Visible', 'on');
+    savefig(figH, fullfile(outFolder, fname));
+end
+
+function applyDataTips(figH, pinnedPoints, t)
+    try
+        if isempty(pinnedPoints), return; end
+        if isstruct(pinnedPoints)
+            ptsCell = num2cell(pinnedPoints);
+        elseif iscell(pinnedPoints)
+            ptsCell = pinnedPoints;
+        else
+            ptsCell = {pinnedPoints};
+        end
+        
+        for pi = 1:numel(ptsCell)
+            if iscell(ptsCell)
+                pt = ptsCell{pi};
+            else
+                pt = ptsCell(pi);
+            end
+            
+            t_pinned = datetime(pt.xValue, 'InputFormat', 'yyyy-MM-dd HH:mm:ss');
+            if isnat(t_pinned), continue; end
+            [~, idx] = min(abs(t - t_pinned));
+            
+            lines = [findobj(figH, 'Type', 'line'); findobj(figH, 'Type', 'stair')];
+            targetLine = [];
+            
+            % Match by DisplayName
+            for li = 1:numel(lines)
+                dispName = lines(li).DisplayName;
+                if isempty(dispName), continue; end
+                
+                cleanedDisp = lower(regexprep(dispName, '[^a-zA-Z0-9]', ''));
+                cleanedTarget = lower(regexprep(pt.seriesName, '[^a-zA-Z0-9]', ''));
+                
+                if contains(cleanedDisp, cleanedTarget) || contains(cleanedTarget, cleanedDisp)
+                    targetLine = lines(li);
+                    break;
+                end
+            end
+            
+            % Fallback: Match by closest Y value at index
+            if isempty(targetLine) && ~isempty(lines)
+                minDiff = Inf;
+                for li = 1:numel(lines)
+                    yData = lines(li).YData;
+                    if numel(yData) >= idx
+                        yVal = yData(idx);
+                        diffVal = abs(yVal - pt.yValue);
+                        if diffVal < minDiff && diffVal < 0.05
+                            minDiff = diffVal;
+                            targetLine = lines(li);
+                        end
+                    end
+                end
+            end
+            
+            if ~isempty(targetLine)
+                try
+                    dt = datatip(targetLine, 'DataIndex', idx);
+                    dt.FontSize = 8;
+                    dt.FontName = 'Helvetica';
+                catch
+                    try
+                        axParent = targetLine.Parent;
+                        axes(axParent);
+                        text(t(idx), pt.yValue, sprintf('X: %s\\\\nY: %.4f', datestr(t(idx), 'dd-mmm-yyyy HH:MM:ss'), pt.yValue), ...
+                            'BackgroundColor','w','EdgeColor',[0.3 0.3 0.3],'FontSize',8,'Interpreter','none');
+                    catch
+                    end
+                end
+            end
+        end
+    catch ME
+        warning('Failed to populate programmatic MATLAB datatips: %s', ME.message);
+    end
+end
 `;
           fs.writeFileSync(mScriptPath, finalScriptContent);
         } else {
